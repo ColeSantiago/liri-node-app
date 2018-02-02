@@ -13,25 +13,57 @@ let params = {
   exclude_replies: 'true'
 }
 
-client.get("statuses/home_timeline", params, function(error, tweets, response) {
+let arg = process.argv[2];
 
-	// console.log(tweets);
+// twitter api
 
-	if (!error) {
+	if (arg === 'my-tweets') {
 
-		 for (let i = 0; i < tweets.length; i++) {
-	      
-	      let date = tweets[i].created_at
-	      let text = tweets[i].text
+		client.get("statuses/home_timeline", params, function(error, tweets, response) {
 
-	      console.log(date);
-	      console.log(text);
-	     
-	     
-     	}
-    }
+		// console.log(tweets);
+			if (!error) {
 
-});
+				for (let i = 0; i < tweets.length; i++) {
+			      
+			      let date = tweets[i].created_at;
+			      let text = tweets[i].text;
+
+			      console.log('Date created: ' + date);
+			      console.log('Tweet: ' + text);
+			      
+		     	}
+		    }
+		});
+	};
+
+
+// spotify api
+
+	if (arg === 'spotify-this-song') {
+
+		const argTwo = process.argv[3];
+
+			if (argTwo) {
+		
+				spotify.search({ type: 'track', query: argTwo }, function(err, data) {
+
+					if (!err) {
+
+							console.log('Artist: ' + data.tracks.items[0].artists[0].name);
+							console.log('Track: ' + data.tracks.items[0].name);
+							console.log('Preview link: ' + data.tracks.items[0].preview_url);
+							console.log('Album: ' + data.tracks.items[0].album.name);
+					}
+
+				})
+
+			}
+
+	}
+
+
+
 
 		
 
