@@ -15,6 +15,13 @@ let params = {
 
 let arg = process.argv[2];
 
+	if (!arg) {
+
+		console.log('Search for my latest tweets: my-tweets');
+		console.log('Search for a song on spotify: spotify-this-song "<name of song>"');
+		console.log('Search for a movie on IMDB: movie-this "<name of movie>"');
+	}
+
 // twitter api
 
 	if (arg === 'my-tweets') {
@@ -42,10 +49,10 @@ let arg = process.argv[2];
 
 	if (arg === 'spotify-this-song') {
 
-		const argTwo = process.argv[3];
+		let argTwo = process.argv[3];
 
-			if (argTwo) {
-		
+			if (typeof argTwo === 'string') {
+
 				spotify.search({ type: 'track', query: argTwo }, function(err, data) {
 
 					if (!err) {
@@ -55,12 +62,28 @@ let arg = process.argv[2];
 							console.log('Preview link: ' + data.tracks.items[0].preview_url);
 							console.log('Album: ' + data.tracks.items[0].album.name);
 					}
-
 				})
 
+			} 
+
+			if (!argTwo) {
+
+				spotify.search({ type: 'track', query: 'swimming in the moonlight' }, function(err, data) {
+
+					if (!err) {
+						
+						console.log('Artist: ' + data.tracks.items[0].artists[0].name);
+						console.log('Track: ' + data.tracks.items[0].name);
+						console.log('Preview link: ' + data.tracks.items[0].preview_url);
+						console.log('Album: ' + data.tracks.items[0].album.name);
+					}
+				})
 			}
 
 	}
+
+			
+	
 
 
 
