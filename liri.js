@@ -5,6 +5,7 @@ const keys = require("./keys");
 const Twitter = require('twitter');
 const Spotify = require('node-spotify-api');
 const request = require("request");
+const fs = require("fs");
 
 const spotify = new Spotify(keys.spotify);
 const client = new Twitter(keys.twitter);
@@ -18,6 +19,7 @@ let arg = process.argv[2];
 		console.log('Search for my latest tweets: my-tweets');
 		console.log('Search for a song on spotify: spotify-this-song <name of song>');
 		console.log('Search for a movie on IMDB: movie-this <name of movie>');
+		console.log('Or: do-what-it-says');
 	}
 
 // twitter api
@@ -172,10 +174,32 @@ let params = {
 				})
 		}
 
+	};
+
+// fs read file
+
+	if (arg === 'do-what-it-says') {
+
+		fs.readFile("random.txt", "utf8", function(error, data) {
+
+			if (!error) {
+
+				let randomSong = data
+
+				spotify.search({ type: 'track', query: randomSong }, function(err, data) {
+
+					if (!err) {
+
+							console.log('Artist: ' + data.tracks.items[0].artists[0].name);
+							console.log('Track: ' + data.tracks.items[0].name);
+							console.log('Preview link: ' + data.tracks.items[0].preview_url);
+							console.log('Album: ' + data.tracks.items[0].album.name);
+					}
+				})
+			}
+		})
+
 	}
-
-
-
 	
 
 
