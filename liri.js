@@ -16,8 +16,8 @@ let arg = process.argv[2];
 	if (!arg) {
 
 		console.log('Search for my latest tweets: my-tweets');
-		console.log('Search for a song on spotify: spotify-this-song "<name of song>"');
-		console.log('Search for a movie on IMDB: movie-this "<name of movie>"');
+		console.log('Search for a song on spotify: spotify-this-song <name of song>');
+		console.log('Search for a movie on IMDB: movie-this <name of movie>');
 	}
 
 // twitter api
@@ -56,7 +56,23 @@ let params = {
 
 			if (typeof argTwo === 'string') {
 
-				spotify.search({ type: 'track', query: argTwo }, function(err, data) {
+				let song = process.argv;
+				let songSearch = "";
+
+				for (let i = 3; i < song.length; i++) {
+
+				  if (i > 3 && i < song.length) {
+
+				    songSearch = songSearch + "+" + song[i];
+
+				  } else {
+
+				    songSearch += song[i];
+
+				  }
+				}
+
+				spotify.search({ type: 'track', query: songSearch }, function(err, data) {
 
 					if (!err) {
 
@@ -89,43 +105,76 @@ let params = {
 
 	if (arg === 'movie-this') { 
 
-		let movie = process.argv;
-		let movieSearch = "";
+		let argTwo = process.argv[3];
 
-			for (let i = 3; i < movie.length; i++) {
+			if (typeof argTwo === 'string') {
 
-			  if (i > 3 && i < movie.length) {
+				let movie = process.argv;
+				let movieSearch = "";
 
-			    movieSearch = movieSearch + "+" + movie[i];
+				for (let i = 3; i < movie.length; i++) {
 
-			  } else {
+				  if (i > 3 && i < movie.length) {
 
-			    movieSearch += movie[i];
+				    movieSearch = movieSearch + "+" + movie[i];
 
-			  }
-			}
+				  } else {
 
-		const queryUrl = "http://www.omdbapi.com/?t=" + movieSearch + "&y=&plot=short&apikey=trilogy";
+				    movieSearch += movie[i];
 
-		request(queryUrl, function(error, response, body) {
+				  }
+				}
 
-	  		if (!error && response.statusCode === 200) {
+				const queryUrl = "http://www.omdbapi.com/?t=" + movieSearch + "&y=&plot=short&apikey=trilogy";
 
-	    		console.log("Title: " + JSON.parse(body).Title);
-	    		console.log("Release Year: " + JSON.parse(body).Year);
-	    		console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+				request(queryUrl, function(error, response, body) {
 
-	    		const ratingObject = JSON.parse(body).Ratings;
-	    		console.log("Rotten Tomatoes Rating: " + (ratingObject[1].Value));
+			  		if (!error && response.statusCode === 200) {
 
-	    		console.log("Country: " + JSON.parse(body).Country);
-	    		console.log("Language: " + JSON.parse(body).Language);
-	    		console.log("Plot: " + JSON.parse(body).Plot);
-	    		console.log("Actors: " + JSON.parse(body).Actors);
+			    		console.log("Title: " + JSON.parse(body).Title);
+			    		console.log("Release Year: " + JSON.parse(body).Year);
+			    		console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
 
-	  		}
-		})
+			    		const ratingObject = JSON.parse(body).Ratings;
+			    		console.log("Rotten Tomatoes Rating: " + (ratingObject[1].Value));
+
+			    		console.log("Country: " + JSON.parse(body).Country);
+			    		console.log("Language: " + JSON.parse(body).Language);
+			    		console.log("Plot: " + JSON.parse(body).Plot);
+			    		console.log("Actors: " + JSON.parse(body).Actors);
+
+			  		}
+				})
+		}
+
+		if (!argTwo) {
+
+				const queryUrl = "http://www.omdbapi.com/?t=serenity&y=&plot=short&apikey=trilogy";
+				console.log(queryUrl);
+
+				request(queryUrl, function(error, response, body) {
+
+			  		if (!error && response.statusCode === 200) {
+
+			    		console.log("Title: " + JSON.parse(body).Title);
+			    		console.log("Release Year: " + JSON.parse(body).Year);
+			    		console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+
+			    		const ratingObject = JSON.parse(body).Ratings;
+			    		console.log("Rotten Tomatoes Rating: " + (ratingObject[1].Value));
+
+			    		console.log("Country: " + JSON.parse(body).Country);
+			    		console.log("Language: " + JSON.parse(body).Language);
+			    		console.log("Plot: " + JSON.parse(body).Plot);
+			    		console.log("Actors: " + JSON.parse(body).Actors);
+
+			  		}
+				})
+		}
+
 	}
+
+
 
 	
 
