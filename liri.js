@@ -41,9 +41,13 @@ let params = {
 			      let date = tweets[i].created_at;
 			      let text = tweets[i].text;
 
-			      console.log('Date created: ' + date);
-			      console.log('Tweet: ' + text);
- 
+			      let tweetArray = [
+			      'Date created: ' + date,
+			      'Tweet: ' + text ];
+
+			    	let tweetsInfo = JSON.stringify(tweetArray, null, 2);
+					console.log(tweetsInfo);
+					writeFile(tweetsInfo);
 		     	}
 		    }
 		});
@@ -61,16 +65,12 @@ let params = {
 				let song = process.argv;
 				let songSearch = "";
 
+			// for loop so no quotations are needed for searches with more then one word
 				for (let i = 3; i < song.length; i++) {
-
 				  if (i > 3 && i < song.length) {
-
 				    songSearch = songSearch + "+" + song[i];
-
 				  } else {
-
 				    songSearch += song[i];
-
 				  }
 				}
 
@@ -78,14 +78,23 @@ let params = {
 
 					if (!err) {
 
-							console.log('Artist: ' + data.tracks.items[0].artists[0].name);
-							console.log('Track: ' + data.tracks.items[0].name);
-							console.log('Preview link: ' + data.tracks.items[0].preview_url);
-							console.log('Album: ' + data.tracks.items[0].album.name);
+						let songSearchArray = [
+
+						'Artist: ' + data.tracks.items[0].artists[0].name,
+						'Track: ' + data.tracks.items[0].name,
+						'Preview link: ' + data.tracks.items[0].preview_url,
+						'Album: ' + data.tracks.items[0].album.name ];
+
+						let songInfo = JSON.stringify(songSearchArray, null, 2);
+						console.log(songInfo);
+						writeFile(songInfo);
+
 					}
 				})
 
 			} 
+
+			// default song search if no user input
 
 			if (!argTwo) {
 
@@ -93,10 +102,16 @@ let params = {
 
 					if (!err) {
 
-						console.log('Artist: ' + data.tracks.items[0].artists[0].name);
-						console.log('Track: ' + data.tracks.items[0].name);
-						console.log('Preview link: ' + data.tracks.items[0].preview_url);
-						console.log('Album: ' + data.tracks.items[0].album.name);
+						let defaultsongArray = [
+
+						'Artist: ' + data.tracks.items[0].artists[0].name,
+						'Track: ' + data.tracks.items[0].name,
+						'Preview link: ' + data.tracks.items[0].preview_url,
+						'Album: ' + data.tracks.items[0].album.name ];
+
+						let defaultsongInfo = JSON.stringify(defaultsongArray, null, 2);
+						console.log(defaultsongInfo);
+						writeFile(defaultsongInfo);
 					}
 				})
 			}
@@ -115,15 +130,10 @@ let params = {
 				let movieSearch = "";
 
 				for (let i = 3; i < movie.length; i++) {
-
 				  if (i > 3 && i < movie.length) {
-
 				    movieSearch = movieSearch + "+" + movie[i];
-
 				  } else {
-
 				    movieSearch += movie[i];
-
 				  }
 				}
 
@@ -133,43 +143,50 @@ let params = {
 
 			  		if (!error && response.statusCode === 200) {
 
-			    		console.log("Title: " + JSON.parse(body).Title);
-			    		console.log("Release Year: " + JSON.parse(body).Year);
-			    		console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+			  			const ratingObject = JSON.parse(body).Ratings;
 
-			    		const ratingObject = JSON.parse(body).Ratings;
-			    		console.log("Rotten Tomatoes Rating: " + (ratingObject[1].Value));
+			    		let movieArray = [
+			    		"Title: " + JSON.parse(body).Title,
+			    		"Release Year: " + JSON.parse(body).Year,
+			    		"IMDB Rating: " + JSON.parse(body).imdbRating,
+			    		"Rotten Tomatoes Rating: " + (ratingObject[1].Value),
+			    		"Country: " + JSON.parse(body).Country,
+			    		"Language: " + JSON.parse(body).Language,
+			    		"Plot: " + JSON.parse(body).Plot,
+			    		"Actors: " + JSON.parse(body).Actors ];
 
-			    		console.log("Country: " + JSON.parse(body).Country);
-			    		console.log("Language: " + JSON.parse(body).Language);
-			    		console.log("Plot: " + JSON.parse(body).Plot);
-			    		console.log("Actors: " + JSON.parse(body).Actors);
-
+			    		let movieInfo = JSON.stringify(movieArray, null, 2);
+						console.log(movieInfo);
+						writeFile(movieInfo);
 			  		}
 				})
 		}
 
+		// default movie search if no user input
+
 		if (!argTwo) {
 
 				const queryUrl = "http://www.omdbapi.com/?t=serenity&y=&plot=short&apikey=trilogy";
-				console.log(queryUrl);
 
 				request(queryUrl, function(error, response, body) {
 
 			  		if (!error && response.statusCode === 200) {
 
-			    		console.log("Title: " + JSON.parse(body).Title);
-			    		console.log("Release Year: " + JSON.parse(body).Year);
-			    		console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+			  			const ratingObject = JSON.parse(body).Ratings;
 
-			    		const ratingObject = JSON.parse(body).Ratings;
-			    		console.log("Rotten Tomatoes Rating: " + (ratingObject[1].Value));
+			    		let defaultMovieArray= [
+			    		"Title: " + JSON.parse(body).Title,
+			    		"Release Year: " + JSON.parse(body).Year,
+			    		"IMDB Rating: " + JSON.parse(body).imdbRating,
+			    		"Rotten Tomatoes Rating: " + (ratingObject[1].Value),
+			    		"Country: " + JSON.parse(body).Country,
+			    		"Language: " + JSON.parse(body).Language,
+			    		"Plot: " + JSON.parse(body).Plot,
+			    		"Actors: " + JSON.parse(body).Actors ];
 
-			    		console.log("Country: " + JSON.parse(body).Country);
-			    		console.log("Language: " + JSON.parse(body).Language);
-			    		console.log("Plot: " + JSON.parse(body).Plot);
-			    		console.log("Actors: " + JSON.parse(body).Actors);
-
+			    		let defaultMovie = JSON.stringify(defaultMovieArray, null, 2);
+						console.log(defaultMovie);
+						writeFile(defaultMovie);
 			  		}
 				})
 		}
@@ -207,15 +224,15 @@ let params = {
 		})
 
 	}
+
+// function to log results onto text file
 	
 	function writeFile(data) { 
 		fs.appendFile('./log.txt', data, function(err) {
 						  
 			if (err) {
 				console.log(err);
-			} else {
-				console.log('well something happened');
-			}
+			} 
 		})
 	}
 

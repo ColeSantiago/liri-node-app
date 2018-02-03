@@ -1,6 +1,0 @@
-[
-  "Artist: Conor Oberst and the Mystic Valley Band",
-  "Track: One of My Kind",
-  "Preview link: https://p.scdn.co/mp3-preview/7b8a89e6633a69fc07816f3e8e0f7ebc3ca39027?cid=c7f8892159814bb58e41c09f36f825bd",
-  "Album: One of My Kind"
-]
