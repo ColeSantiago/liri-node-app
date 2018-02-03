@@ -43,7 +43,7 @@ let params = {
 
 			      console.log('Date created: ' + date);
 			      console.log('Tweet: ' + text);
-			      
+ 
 		     	}
 		    }
 		});
@@ -190,10 +190,17 @@ let params = {
 
 					if (!err) {
 
-							console.log('Artist: ' + data.tracks.items[0].artists[0].name);
-							console.log('Track: ' + data.tracks.items[0].name);
-							console.log('Preview link: ' + data.tracks.items[0].preview_url);
-							console.log('Album: ' + data.tracks.items[0].album.name);
+						let randomSongArray = [
+							'Artist: ' + data.tracks.items[0].artists[0].name,
+							'Track: ' + data.tracks.items[0].name,
+							'Preview link: ' + data.tracks.items[0].preview_url,
+							'Album: ' + data.tracks.items[0].album.name];
+
+						let randomSongs = JSON.stringify(randomSongArray, null, 2);
+						console.log(randomSongs);
+						writeFile(randomSongs);
+
+
 					}
 				})
 			}
@@ -201,7 +208,16 @@ let params = {
 
 	}
 	
-
+	function writeFile(data) { 
+		fs.appendFile('./log.txt', data, function(err) {
+						  
+			if (err) {
+				console.log(err);
+			} else {
+				console.log('well something happened');
+			}
+		})
+	}
 
 
 
