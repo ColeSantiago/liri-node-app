@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const keys = require("./keys");
-
 const Twitter = require('twitter');
 const Spotify = require('node-spotify-api');
 const request = require("request");
@@ -14,13 +13,13 @@ let arg = process.argv[2];
 
 //directions if user input is blank
 
-	if (!arg) {
+if (!arg) {
 
-		console.log('Search for my latest tweets: my-tweets');
-		console.log('Search for a song on spotify: spotify-this-song <name of song>');
-		console.log('Search for a movie on IMDB: movie-this <name of movie>');
-		console.log('Or: do-what-it-says');
-	}
+	console.log('Search for my latest tweets: my-tweets');
+	console.log('Search for a song on spotify: spotify-this-song <name of song>');
+	console.log('Search for a movie on IMDB: movie-this <name of movie>');
+	console.log('Or: do-what-it-says');
+};
 
 // twitter api
 
@@ -33,26 +32,27 @@ let params = {
 
 		client.get("statuses/home_timeline", params, function(error, tweets, response) {
 
-		// console.log(tweets);
 			if (!error) {
 
 				for (let i = 0; i < tweets.length; i++) {
-			      
-			      let date = tweets[i].created_at;
-			      let text = tweets[i].text;
 
-			      let tweetArray = [
-			      'Date created: ' + date,
-			      'Tweet: ' + text ];
+			    	const tweetObject = {
+			      		Date: tweets[i].created_at,
+			      		Tweet: tweets[i].text, 
 
-			    	let tweetsInfo = JSON.stringify(tweetArray, null, 2);
-					console.log(tweetsInfo);
-					writeFile(tweetsInfo);
+					    printTweets: function() {
+					      	console.log(`Date Created: ${this.Date}`);
+					      	console.log(`Tweet: ${this.Tweet}`);
+					      	writeFile(`Tweet: ${this.Tweet}`);
+					      	writeFile(`Date Created: ${this.Date}`);
+					    }
+		     		}
+
+		     		tweetObject.printTweets();		
 		     	}
 		    }
 		});
 	};
-
 
 // spotify api
 
@@ -62,10 +62,10 @@ let params = {
 
 			if (typeof argTwo === 'string') {
 
+			// so no quotations are needed for searches with more then one word
 				let song = process.argv;
 				let songSearch = "";
 
-			// for loop so no quotations are needed for searches with more then one word
 				for (let i = 3; i < song.length; i++) {
 				  if (i > 3 && i < song.length) {
 				    songSearch = songSearch + "+" + song[i];
@@ -73,22 +73,32 @@ let params = {
 				    songSearch += song[i];
 				  }
 				}
+			// 
 
 				spotify.search({ type: 'track', query: songSearch }, function(err, data) {
 
 					if (!err) {
 
-						let songSearchArray = [
+						let songSearchObject = {
 
-						'Artist: ' + data.tracks.items[0].artists[0].name,
-						'Track: ' + data.tracks.items[0].name,
-						'Preview link: ' + data.tracks.items[0].preview_url,
-						'Album: ' + data.tracks.items[0].album.name ];
+							Artist: data.tracks.items[0].artists[0].name,
+							Track: data.tracks.items[0].name,
+							Preview: data.tracks.items[0].preview_url,
+							Album: data.tracks.items[0].album.name, 
 
-						let songInfo = JSON.stringify(songSearchArray, null, 2);
-						console.log(songInfo);
-						writeFile(songInfo);
+							printSong: function() {
+								console.log(`Artist: ${this.Artist}`);
+								console.log(`Track: ${this.Track}`);
+								console.log(`Preview URL: ${this.Preview}`);
+								console.log(`Album: ${this.Album}`);
+								writeFile(`Artist: ${this.Artist}`);
+								writeFile(`Track: ${this.Track}`);
+								writeFile(`Preview URL: ${this.Preview}`);
+								writeFile(`Album: ${this.Album}`);
+							}
+						}
 
+						songSearchObject.printSong();
 					}
 				})
 
@@ -102,16 +112,26 @@ let params = {
 
 					if (!err) {
 
-						let defaultsongArray = [
+						let songSearchObject = {
 
-						'Artist: ' + data.tracks.items[0].artists[0].name,
-						'Track: ' + data.tracks.items[0].name,
-						'Preview link: ' + data.tracks.items[0].preview_url,
-						'Album: ' + data.tracks.items[0].album.name ];
+							Artist: data.tracks.items[0].artists[0].name,
+							Track: data.tracks.items[0].name,
+							Preview: data.tracks.items[0].preview_url,
+							Album: data.tracks.items[0].album.name, 
 
-						let defaultsongInfo = JSON.stringify(defaultsongArray, null, 2);
-						console.log(defaultsongInfo);
-						writeFile(defaultsongInfo);
+							printSong: function() {
+								console.log(`Artist: ${this.Artist}`);
+								console.log(`Track: ${this.Track}`);
+								console.log(`Preview URL: ${this.Preview}`);
+								console.log(`Album: ${this.Album}`);
+								writeFile(`Artist: ${this.Artist}`);
+								writeFile(`Track: ${this.Track}`);
+								writeFile(`Preview URL: ${this.Preview}`);
+								writeFile(`Album: ${this.Album}`);
+							}
+						}
+
+						songSearchObject.printSong();
 					}
 				})
 			}
@@ -126,6 +146,7 @@ let params = {
 
 			if (typeof argTwo === 'string') {
 
+				// 
 				let movie = process.argv;
 				let movieSearch = "";
 
@@ -136,6 +157,7 @@ let params = {
 				    movieSearch += movie[i];
 				  }
 				}
+				// 
 
 				const queryUrl = "http://www.omdbapi.com/?t=" + movieSearch + "&y=&plot=short&apikey=trilogy";
 
@@ -145,19 +167,38 @@ let params = {
 
 			  			const ratingObject = JSON.parse(body).Ratings;
 
-			    		let movieArray = [
-			    		"Title: " + JSON.parse(body).Title,
-			    		"Release Year: " + JSON.parse(body).Year,
-			    		"IMDB Rating: " + JSON.parse(body).imdbRating,
-			    		"Rotten Tomatoes Rating: " + (ratingObject[1].Value),
-			    		"Country: " + JSON.parse(body).Country,
-			    		"Language: " + JSON.parse(body).Language,
-			    		"Plot: " + JSON.parse(body).Plot,
-			    		"Actors: " + JSON.parse(body).Actors ];
+			    		let movieObject = {
+				    		Title: JSON.parse(body).Title,
+				    		releaseYear: JSON.parse(body).Year,
+				    		imdbRating: JSON.parse(body).imdbRating,
+				    		rottenTomatoesRating: ratingObject[1].Value,
+				    		Country: JSON.parse(body).Country,
+				    		Language: JSON.parse(body).Language,
+				    		Plot: JSON.parse(body).Plot,
+				    		Actors: JSON.parse(body).Actors,
 
-			    		let movieInfo = JSON.stringify(movieArray, null, 2);
-						console.log(movieInfo);
-						writeFile(movieInfo);
+				    		printMovie: function() {
+				    			console.log(`Title: ${this.Title}`);
+				    			console.log(`Release Year: ${this.releaseYear}`);
+				    			console.log(`IMDB Rating: ${this.imdbRating}`);
+				    			console.log(`Rotten Tomatoes Rating: ${this.rottenTomatoesRating}`);
+				    			console.log(`Country: ${this.Country}`);
+				    			console.log(`Language: ${this.Language}`);
+				    			console.log(`Plot: ${this.Plot}`);
+				    			console.log(`Actors: ${this.Actors}`);
+
+				    			writeFile(`Title: ${this.Title}`);
+				    			writeFile(`Release Year: ${this.releaseYear}`);
+				    			writeFile(`IMDB Rating: ${this.imdbRating}`);
+				    			writeFile(`Rotten Tomatoes Rating: ${this.rottenTomatoesRating}`);
+				    			writeFile(`Country: ${this.Country}`);
+				    			writeFile(`Language: ${this.Language}`);
+				    			writeFile(`Plot: ${this.Plot}`);
+				    			writeFile(`Actors: ${this.Actors}`);
+				    		}
+						}
+
+						movieObject.printMovie();
 			  		}
 				})
 		}
@@ -174,19 +215,38 @@ let params = {
 
 			  			const ratingObject = JSON.parse(body).Ratings;
 
-			    		let defaultMovieArray= [
-			    		"Title: " + JSON.parse(body).Title,
-			    		"Release Year: " + JSON.parse(body).Year,
-			    		"IMDB Rating: " + JSON.parse(body).imdbRating,
-			    		"Rotten Tomatoes Rating: " + (ratingObject[1].Value),
-			    		"Country: " + JSON.parse(body).Country,
-			    		"Language: " + JSON.parse(body).Language,
-			    		"Plot: " + JSON.parse(body).Plot,
-			    		"Actors: " + JSON.parse(body).Actors ];
+			  			let movieObject = {
+				    		Title: JSON.parse(body).Title,
+				    		releaseYear: JSON.parse(body).Year,
+				    		imdbRating: JSON.parse(body).imdbRating,
+				    		rottenTomatoesRating: (ratingObject[1].Value),
+				    		Country: JSON.parse(body).Country,
+				    		Language: JSON.parse(body).Language,
+				    		Plot: JSON.parse(body).Plot,
+				    		Actors: JSON.parse(body).Actors,
 
-			    		let defaultMovie = JSON.stringify(defaultMovieArray, null, 2);
-						console.log(defaultMovie);
-						writeFile(defaultMovie);
+				    		printMovie: function() {
+				    			console.log(`Title: ${this.Title}`);
+				    			console.log(`Release Year: ${this.releaseYear}`);
+				    			console.log(`IMDB Rating: ${this.imdbRating}`);
+				    			console.log(`Rotten Tomatoes Rating: ${this.rottenTomatoesRating}`);
+				    			console.log(`Country: ${this.Country}`);
+				    			console.log(`Language: ${this.Language}`);
+				    			console.log(`Plot: ${this.Plot}`);
+				    			console.log(`Actors: ${this.Actors}`);
+
+				    			writeFile(`Title: ${this.Title}`);
+				    			writeFile(`Release Year: ${this.releaseYear}`);
+				    			writeFile(`IMDB Rating: ${this.imdbRating}`);
+				    			writeFile(`Rotten Tomatoes Rating: ${this.rottenTomatoesRating}`);
+				    			writeFile(`Country: ${this.Country}`);
+				    			writeFile(`Language: ${this.Language}`);
+				    			writeFile(`Plot: ${this.Plot}`);
+				    			writeFile(`Actors: ${this.Actors}`);
+				    		}
+						}
+
+						movieObject.printMovie();
 			  		}
 				})
 		}
@@ -207,17 +267,25 @@ let params = {
 
 					if (!err) {
 
-						let randomSongArray = [
-							'Artist: ' + data.tracks.items[0].artists[0].name,
-							'Track: ' + data.tracks.items[0].name,
-							'Preview link: ' + data.tracks.items[0].preview_url,
-							'Album: ' + data.tracks.items[0].album.name];
+						let randomSongObject = {
+							Artist: data.tracks.items[0].artists[0].name,
+							Track: data.tracks.items[0].name,
+							Preview: data.tracks.items[0].preview_url,
+							Album: data.tracks.items[0].album.name,
 
-						let randomSongs = JSON.stringify(randomSongArray, null, 2);
-						console.log(randomSongs);
-						writeFile(randomSongs);
+							printSong: function() {
+								console.log(`Artist: ${this.Artist}`);
+								console.log(`Track: ${this.Track}`);
+								console.log(`Preview URL: ${this.Preview}`);
+								console.log(`Album: ${this.Album}`);
+								writeFile(`Artist: ${this.Artist}`);
+								writeFile(`Track: ${this.Track}`);
+								writeFile(`Preview URL: ${this.Preview}`);
+								writeFile(`Album: ${this.Album}`);
+							}
+						}
 
-
+						randomSongObject.printSong();
 					}
 				})
 			}
@@ -235,8 +303,3 @@ let params = {
 			} 
 		})
 	}
-
-
-
-		
-
