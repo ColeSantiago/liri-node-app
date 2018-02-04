@@ -14,7 +14,7 @@ let arg = process.argv[2];
 //directions if user input is blank
 
 if (!arg) {
-
+	
 	console.log('Search for my latest tweets: my-tweets');
 	console.log('Search for a song on spotify: spotify-this-song <name of song>');
 	console.log('Search for a movie on IMDB: movie-this <name of movie>');
@@ -253,45 +253,45 @@ let params = {
 
 	};
 
-// fs read file
+	// fs read file
 
-	if (arg === 'do-what-it-says') {
+		if (arg === 'do-what-it-says') {
 
-		fs.readFile("random.txt", "utf8", function(error, data) {
+			fs.readFile("random.txt", "utf8", function(error, data) {
 
-			if (!error) {
+				if (!error) {
 
-				let randomSong = data
+					let randomSong = data
 
-				spotify.search({ type: 'track', query: randomSong }, function(err, data) {
+					spotify.search({ type: 'track', query: randomSong }, function(err, data) {
 
-					if (!err) {
+						if (!err) {
 
-						let randomSongObject = {
-							Artist: data.tracks.items[0].artists[0].name,
-							Track: data.tracks.items[0].name,
-							Preview: data.tracks.items[0].preview_url,
-							Album: data.tracks.items[0].album.name,
+							let randomSongObject = {
+								Artist: data.tracks.items[0].artists[0].name,
+								Track: data.tracks.items[0].name,
+								Preview: data.tracks.items[0].preview_url,
+								Album: data.tracks.items[0].album.name,
 
-							printSong: function() {
-								console.log(`Artist: ${this.Artist}`);
-								console.log(`Track: ${this.Track}`);
-								console.log(`Preview URL: ${this.Preview}`);
-								console.log(`Album: ${this.Album}`);
-								writeFile(`Artist: ${this.Artist}`);
-								writeFile(`Track: ${this.Track}`);
-								writeFile(`Preview URL: ${this.Preview}`);
-								writeFile(`Album: ${this.Album}`);
+								printSong: function() {
+									console.log(`Artist: ${this.Artist}`);
+									console.log(`Track: ${this.Track}`);
+									console.log(`Preview URL: ${this.Preview}`);
+									console.log(`Album: ${this.Album}`);
+									writeFile(`Artist: ${this.Artist}`);
+									writeFile(`Track: ${this.Track}`);
+									writeFile(`Preview URL: ${this.Preview}`);
+									writeFile(`Album: ${this.Album}`);
+								}
 							}
+
+							randomSongObject.printSong();
 						}
+					})
+				}
+			})
 
-						randomSongObject.printSong();
-					}
-				})
-			}
-		})
-
-	}
+		}
 
 // function to log results onto text file
 	
