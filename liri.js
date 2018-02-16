@@ -25,15 +25,16 @@ if (!arg) {
 
 let params = {
   count: 20,
-  exclude_replies: 'true'
+  exclude_replies: 'true',
+  user_id: 'coletsantiagot1'
 }
 
 	if (arg === 'my-tweets') {
 
-		client.get("statuses/home_timeline", params, function(error, tweets, response) {
+		client.get("statuses/user_timeline", params, function(error, tweets, response) {
 
 			if (!error) {
-
+				
 				for (let i = 0; i < tweets.length; i++) {
 
 			    	const tweetObject = {
